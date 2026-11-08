@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  html {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    scroll-behavior: smooth;
+  }
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #070b14;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Smooth image zoom effect container */
+.gallery-card-image {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+}
+.gallery-card:hover .gallery-card-image {
+  transform: scale(1.05);
+}
+
+/* Image scrim */
+.scrim-overlay {
+  background: linear-gradient(
+    180deg,
+    rgba(7, 11, 20, 0) 0%,
+    rgba(7, 11, 20, 0.35) 50%,
+    rgba(7, 11, 20, 0.95) 100%
+  );
+}
