@@ -1,0 +1,12 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22.12.0"
+
+# Send unknown routes to the Vite entry point so client-side routes work on refresh.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
