@@ -2,5 +2,7 @@
   "name": "SC em Pé - Ajuda Urgente Santa Catarina",
   "description": "Portal humanitário de socorro e reconstrução para as vítimas das enchentes e tornados em Santa Catarina com galeria fotográfica, metas e doações PIX.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

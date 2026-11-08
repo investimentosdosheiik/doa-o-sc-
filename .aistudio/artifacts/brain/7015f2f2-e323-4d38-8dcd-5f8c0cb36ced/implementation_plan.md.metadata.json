@@ -1,6 +1,0 @@
-{
-  "summary":  "Plano de implementação completo para o portal humanitário 'SC em Pé: Ajuda Urgente para Santa Catarina'. Inclui arquitetura visual de emergência escura, curadoria e categorização das 15 fotos reais, galeria interativa com transições suaves em CSS/Framer Motion, modal de lightbox com zoom e metadados de localização, simulador interativo de doação PIX com QR code e chave copia-e-cola, calculadora de impacto humanitário, barra de progresso da meta em tempo real, mural de atualizações das equipes em campo e central de transparência com prestação de contas.",
-  "updatedAt":  "2026-11-08T00:16:06.740365608Z",
-  "requestFeedback":  true,
-  "userFacing":  true
-}

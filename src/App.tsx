@@ -54,10 +54,11 @@ export default function App() {
 
       {/* Main Content Sections */}
       <main className="flex-1">
-        {/* 1. Hero with Direct Instant PIX Box starting at R$ 10 */}
+        {/* 1. Hero with Direct Instant PIX Box and Top Impact Photo Showcase */}
         <HeroEmergency
           onOpenDonate={(amt) => handleOpenDonate(amt || 25)}
           onExploreGallery={scrollToGallery}
+          onOpenPhoto={(photo) => setActivePhoto(photo)}
         />
 
         {/* 2. Crowdfunding Goal Progress Bar & Live PIX Donors */}

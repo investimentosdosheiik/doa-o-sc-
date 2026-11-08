@@ -19,7 +19,7 @@ export const DISASTER_PHOTOS: DisasterPhoto[] = [
     categoryLabel: 'Inundações Urbanas',
     src: '/assets/aistudio/keWrcCCYcuSKU_gFMSLCfufc1y5zwjx3HQVtA-06mSr5H1A_mjFDSpT_Mlo41lM5J-STLyEXPf_hHu2cMm9BvPLnMhHrEYnz4mrAibWtesLJFjHsPHRRiGiDoy6F4DnxAZONJMAi0IeuYpB_NhFI-spPE1g8Io6Mgv7BgdzcGIWUzXXxSvVXIetM_12263bff.jfif',
     caption: 'Cheia histórica invade primeiro pavimento de edifícios residenciais e paralisa o comércio central. Barcos são o único meio de acesso para salvamento.',
-    impactTag: 'Cota de 12.8m de Água',
+    impactTag: 'Bairros Alagados',
     featured: true
   },
   {
