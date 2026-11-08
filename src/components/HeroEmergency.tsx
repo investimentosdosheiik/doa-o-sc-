@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, Copy, Check, QrCode, ShieldCheck, Camera, Maximize2, MapPin, AlertCircle } from 'lucide-react';
+import { Heart, QrCode, ShieldCheck, Camera, Maximize2, MapPin } from 'lucide-react';
 import { DISASTER_PHOTOS, DisasterPhoto } from '../data/photos';
 
 interface HeroEmergencyProps {
@@ -39,17 +39,9 @@ export const HeroEmergency: React.FC<HeroEmergencyProps> = ({
   const [selectedAmount, setSelectedAmount] = useState<number>(25);
   const [customValue, setCustomValue] = useState<string>('');
   const [isCustom, setIsCustom] = useState<boolean>(false);
-  const [copiedKey, setCopiedKey] = useState<boolean>(false);
 
   const activeHeroPhoto = HERO_PHOTOS[selectedPhotoIndex];
-  const pixKey = 'socorro.sc@scempe.org.br';
   const effectiveAmount = isCustom ? (Number(customValue) || 10) : selectedAmount;
-
-  const handleCopyKey = () => {
-    navigator.clipboard.writeText(pixKey);
-    setCopiedKey(true);
-    setTimeout(() => setCopiedKey(false), 2500);
-  };
 
   const getImpactDescription = (amount: number) => {
     if (amount <= 15) return 'Garante 2 galões de água mineral tratada (10L) para quem está sem abastecimento.';
@@ -249,33 +241,14 @@ export const HeroEmergency: React.FC<HeroEmergencyProps> = ({
                 </p>
               </div>
 
-              {/* Instant PIX Key with Copy Button */}
-              <div className="mt-4 space-y-1.5">
-                <label className="text-xs font-semibold text-slate-300 block">
-                  Chave PIX (E-mail oficial):
-                </label>
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 overflow-hidden rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs font-mono text-slate-200 truncate">
-                    {pixKey}
-                  </div>
-                  <button
-                    onClick={handleCopyKey}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-slate-800 px-3 py-2 text-xs font-bold text-white hover:bg-slate-700 transition-colors shrink-0 cursor-pointer"
-                  >
-                    {copiedKey ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
-                    <span>{copiedKey ? 'Copiada!' : 'Copiar'}</span>
-                  </button>
-                </div>
-              </div>
-
               {/* Action Button: Open QR Code Modal */}
-              <div className="mt-4">
+              <div className="mt-5">
                 <button
                   onClick={() => onOpenDonate(effectiveAmount >= 10 ? effectiveAmount : 10)}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 py-3 px-4 text-xs sm:text-sm font-bold text-white shadow-lg hover:bg-red-500 transition-colors cursor-pointer active:scale-[0.98]"
+                  className="w-full inline-flex items-center justify-center gap-2.5 rounded-xl bg-red-600 py-3.5 px-4 text-sm font-bold text-white shadow-lg shadow-red-600/30 hover:bg-red-500 transition-all cursor-pointer active:scale-[0.98]"
                 >
-                  <QrCode className="h-4 w-4" />
-                  <span>Gerar QR Code PIX (R$ {effectiveAmount >= 10 ? effectiveAmount.toFixed(2) : '10.00'})</span>
+                  <QrCode className="h-5 w-5" />
+                  <span>Pagar via PIX (R$ {effectiveAmount >= 10 ? effectiveAmount.toFixed(2) : '10.00'})</span>
                 </button>
               </div>
 
