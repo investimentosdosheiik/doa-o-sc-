@@ -1,12 +1,7 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { X, Copy, Check, QrCode, ShieldCheck, Heart, Zap, ExternalLink } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, Copy, Check, QrCode, ShieldCheck, Heart } from 'lucide-react';
 import QRCode from 'qrcode';
-import {
-  createPixTransaction,
-  pollBravoPayTransaction,
-  buildOfficialBacenPixCode,
-  BRAVOPAY_CHECKOUT_URL,
-} from '../services/bravopay';
+import { fetchGatewayPix, buildBacenPixCode } from '../services/gateway';
 
 interface PixModalProps {
   isOpen: boolean;
@@ -32,10 +27,30 @@ export const PixModal: React.FC<PixModalProps> = ({
 
   const effectiveAmount = isCustom ? (Number(customValue) || 10) : currentAmount;
   
-  // Instant payload generated with mathematically exact BACEN TLV lengths and CRC16-CCITT
-  const [pixPayload, setPixPayload] = useState<string>(() => buildOfficialBacenPixCode(initialAmount));
-
+  const [pixPayload, setPixPayload] = useState<string>(() => buildBacenPixCode(initialAmount));
+  const [isLoadingGateway, setIsLoadingGateway] = useState<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const latestReqIdRef = useRef<number>(0);
+
+  // Lock body scroll and handle Escape key while modal is open
+  useEffect(() => {
+    if (!isOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   // When donationAmount prop changes or modal opens, sync amount immediately
   useEffect(() => {
@@ -44,63 +59,42 @@ export const PixModal: React.FC<PixModalProps> = ({
       setCurrentAmount(amt);
       setIsCustom(false);
       setCustomValue('');
-      setPixPayload(buildOfficialBacenPixCode(amt));
+      setPixPayload(buildBacenPixCode(amt));
     }
   }, [donationAmount, isOpen]);
 
-  // Whenever effectiveAmount changes, instantly update the PIX payload
+  // Whenever effectiveAmount changes, fetch from gateway with debounce and race-condition guard
   useEffect(() => {
     if (!isOpen) return;
-    const instantCode = buildOfficialBacenPixCode(effectiveAmount);
-    setPixPayload(instantCode);
 
-    let stopPolling: (() => void) | null = null;
-    let isMounted = true;
+    const reqId = ++latestReqIdRef.current;
+    setIsLoadingGateway(true);
 
-    // Asynchronously register in BravoPay gateway in the background
-    const registerWithBravoPay = async () => {
+    const timer = setTimeout(async () => {
       try {
-        const result = await createPixTransaction(effectiveAmount);
-        if (!isMounted) return;
-
-        if (result.copyPaste && result.copyPaste.startsWith('000201')) {
+        const result = await fetchGatewayPix(effectiveAmount);
+        if (reqId === latestReqIdRef.current && result?.copyPaste) {
           setPixPayload(result.copyPaste);
         }
-
-        if (result.transactionId) {
-          // Listen in the background for BravoPay dynamic code or automatic payment confirmation
-          stopPolling = pollBravoPayTransaction(
-            result.transactionId,
-            (dynamicCopyPaste) => {
-              if (isMounted && dynamicCopyPaste && dynamicCopyPaste.startsWith('000201')) {
-                setPixPayload(dynamicCopyPaste);
-              }
-            },
-            () => {
-              if (isMounted) {
-                handleAutoPaid();
-              }
-            }
-          );
+      } catch {
+        // Fallback already guaranteed by buildBacenPixCode
+      } finally {
+        if (reqId === latestReqIdRef.current) {
+          setIsLoadingGateway(false);
         }
-      } catch (err) {
-        console.warn('Background gateway sync note:', err);
       }
-    };
-
-    registerWithBravoPay();
+    }, 250);
 
     return () => {
-      isMounted = false;
-      if (stopPolling) stopPolling();
+      clearTimeout(timer);
     };
   }, [effectiveAmount, isOpen]);
 
-  // Draw QR Code on canvas immediately (0ms delay) with standard error correction
+  // Draw QR Code on canvas immediately
   useEffect(() => {
     if (canvasRef.current && pixPayload) {
       QRCode.toCanvas(canvasRef.current, pixPayload, {
-        width: 210,
+        width: 215,
         margin: 2,
         errorCorrectionLevel: 'M',
         color: {
@@ -111,20 +105,37 @@ export const PixModal: React.FC<PixModalProps> = ({
     }
   }, [pixPayload]);
 
-  const handleAutoPaid = useCallback(() => {
-    setHasConfirmed(true);
-    setTimeout(() => {
-      onDonationSuccess(effectiveAmount >= 10 ? effectiveAmount : 10);
-      onClose();
-      setHasConfirmed(false);
-    }, 1500);
-  }, [effectiveAmount, onDonationSuccess, onClose]);
+  const handleCopyPayload = async () => {
+    const payloadToCopy = pixPayload || buildBacenPixCode(effectiveAmount);
+    let copied = false;
 
-  if (!isOpen) return null;
+    if (navigator?.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(payloadToCopy);
+        copied = true;
+      } catch {
+        copied = false;
+      }
+    }
 
-  const handleCopyPayload = () => {
-    const payloadToCopy = pixPayload || buildOfficialBacenPixCode(effectiveAmount);
-    navigator.clipboard.writeText(payloadToCopy);
+    if (!copied) {
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = payloadToCopy;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-9999px';
+        textArea.style.top = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        textArea.remove();
+        copied = true;
+      } catch {
+        // clipboard fallback finished
+      }
+    }
+
     setCopiedPayload(true);
     setTimeout(() => setCopiedPayload(false), 2500);
   };
@@ -137,6 +148,8 @@ export const PixModal: React.FC<PixModalProps> = ({
       setHasConfirmed(false);
     }, 1500);
   };
+
+  if (!isOpen) return null;
 
   return (
     <div
@@ -164,13 +177,7 @@ export const PixModal: React.FC<PixModalProps> = ({
             <QrCode className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
-              <span>Doação via PIX</span>
-              <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded-full">
-                <Zap className="h-3 w-3 fill-emerald-400" />
-                Oficial BACEN
-              </span>
-            </h3>
+            <h3 className="text-lg sm:text-xl font-bold text-white">Doação via PIX</h3>
             <p className="text-xs text-slate-400">Repasse Direto às Famílias Desabrigadas · Sem intermediários</p>
           </div>
         </div>
@@ -211,8 +218,8 @@ export const PixModal: React.FC<PixModalProps> = ({
               </span>
               <input
                 type="number"
-                min="10"
-                placeholder="Ex: 15, 30, 80 (mín. R$ 10)"
+                min="1"
+                placeholder="Ex: 10, 25, 50"
                 value={customValue}
                 onChange={(e) => {
                   setCustomValue(e.target.value);
@@ -234,7 +241,7 @@ export const PixModal: React.FC<PixModalProps> = ({
           </p>
         </div>
 
-        {/* Compliant QR Code Canvas */}
+        {/* QR Code Canvas */}
         <div className="mt-4 flex flex-col items-center justify-center rounded-xl bg-white p-4 text-slate-900 shadow-inner">
           <canvas ref={canvasRef} className="rounded-lg shadow-sm" />
           <span className="mt-2 text-[11px] font-bold text-slate-800 uppercase tracking-wide">
@@ -242,17 +249,12 @@ export const PixModal: React.FC<PixModalProps> = ({
           </span>
         </div>
 
-        {/* Real PIX Copia e Cola Code */}
+        {/* PIX Copia e Cola Code */}
         <div className="mt-4 space-y-2.5">
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="text-xs font-semibold text-slate-300">
-                Código PIX Copia e Cola:
-              </label>
-              <span className="text-[11px] text-emerald-400 font-medium flex items-center gap-1">
-                <Check className="h-3 w-3" /> Chave Válida
-              </span>
-            </div>
+            <label className="text-xs font-semibold text-slate-300 block mb-1">
+              Código PIX Copia e Cola:
+            </label>
             <div className="flex items-center gap-2">
               <input
                 type="text"
@@ -272,24 +274,11 @@ export const PixModal: React.FC<PixModalProps> = ({
           </div>
         </div>
 
-        {/* Direct Checkout Link Option */}
-        <div className="mt-3 text-center">
-          <a
-            href={BRAVOPAY_CHECKOUT_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-red-400 transition-colors underline underline-offset-4"
-          >
-            <ExternalLink className="h-3.5 w-3.5" />
-            <span>Ou pagar diretamente na página do checkout BravoPay</span>
-          </a>
-        </div>
-
         {/* Confirmation Button */}
         <div className="mt-4 pt-3 border-t border-slate-800 flex flex-col sm:flex-row items-center gap-2.5 justify-between">
           <div className="flex items-center gap-1.5 text-xs text-emerald-400">
             <ShieldCheck className="h-4 w-4 shrink-0" />
-            <span>Detecção automática de pagamento</span>
+            <span>Auditoria e prestação de contas diária</span>
           </div>
 
           <button

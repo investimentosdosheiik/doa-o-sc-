@@ -25,6 +25,16 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
     setIsZoomed(false);
   }, [photo]);
 
+  // Lock body scroll when photo is active
+  useEffect(() => {
+    if (!photo) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [photo]);
+
   // Keyboard navigation
   useEffect(() => {
     if (!photo) return;

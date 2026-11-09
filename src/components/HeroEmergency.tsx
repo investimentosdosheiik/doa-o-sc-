@@ -126,7 +126,7 @@ export const HeroEmergency: React.FC<HeroEmergencyProps> = ({
         </div>
 
         {/* 2. Main Appeal & Fast PIX Card Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+        <div id="crise" className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
           
           {/* Left Column: Context, Need & Trust */}
           <div className="lg:col-span-7 space-y-4">
