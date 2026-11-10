@@ -10,19 +10,19 @@ interface HeroEmergencyProps {
 
 const QUICK_AMOUNTS = [10, 25, 50, 100];
 
-// 4 high-impact highlight photos for the hero showcase
+// 4 high-impact highlight photos for the hero showcase in requested order
 const HERO_PHOTOS = [
   {
-    ...DISASTER_PHOTOS[0], // Rio do Sul Centro Submerso
-    label: '🌊 Cidade Alagada (Rio do Sul)',
+    ...DISASTER_PHOTOS[1], // Moradora nos Escombros
+    label: '🏚️ Famílias sem Teto',
   },
   {
     ...DISASTER_PHOTOS[4], // Bairro Destruído Tornado
     label: '🌪️ Casas Destelhadas (Oeste)',
   },
   {
-    ...DISASTER_PHOTOS[1], // Moradora nos Escombros
-    label: '🏚️ Famílias sem Teto',
+    ...DISASTER_PHOTOS[0], // Rio do Sul Centro Submerso
+    label: '🌊 Cidade Alagada (Rio do Sul)',
   },
   {
     ...DISASTER_PHOTOS[2], // Cratera Rodovia BR-470

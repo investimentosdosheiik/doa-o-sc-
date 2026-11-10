@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, ShieldAlert } from 'lucide-react';
+import { Heart, HeartHandshake } from 'lucide-react';
 
 interface TopBarProps {
   onOpenDonate: () => void;
@@ -15,10 +15,10 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenDonate }) => {
           className="group flex items-center gap-2.5 text-lg font-bold tracking-tight text-white whitespace-nowrap shrink-0 transition-opacity hover:opacity-90"
         >
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-600/20 text-red-500 border border-red-500/30">
-            <ShieldAlert className="h-4 w-4" />
+            <HeartHandshake className="h-4.5 w-4.5" />
           </span>
           <span className="font-extrabold tracking-tight">
-            SC em <span className="text-red-500">Pé</span>
+            SOS <span className="text-red-500">Santa Catarina</span>
           </span>
         </a>
 
