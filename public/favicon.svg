@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+  </defs>
+  <!-- Background squircle -->
+  <rect width="32" height="32" rx="8" fill="url(#grad)"/>
+  <!-- Bold humanitarian heart with emergency white relief -->
+  <path d="M16 26.5s-9-5.5-11-11a5.8 5.8 0 0 1 9.8-4.5L16 12.2l1.2-1.2A5.8 5.8 0 0 1 27 15.5c-2 5.5-11 11-11 11z" fill="#ffffff"/>
+  <!-- Subtly embossed cross/aid symbol in center for instant emergency relief recognition -->
+  <path d="M14.5 14h3v5h-3zM13.5 15h5v3h-5z" fill="#dc2626"/>
+</svg>
