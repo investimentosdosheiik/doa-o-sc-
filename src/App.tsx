@@ -24,7 +24,7 @@ export default function App() {
   const [activePhoto, setActivePhoto] = useState<DisasterPhoto | null>(null);
   const [isDonateModalOpen, setIsDonateModalOpen] = useState<boolean>(false);
   const [donationAmount, setDonationAmount] = useState<number>(25);
-  const [currentAmount, setCurrentAmount] = useState<number>(334820);
+  const [currentAmount, setCurrentAmount] = useState<number>(338760.50);
   const [donorCount, setDonorCount] = useState<number>(4920);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 

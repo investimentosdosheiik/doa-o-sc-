@@ -70,7 +70,7 @@ export const GoalTracker: React.FC<GoalTrackerProps> = ({
               />
             </div>
             <div className="mt-1.5 flex items-center justify-between text-xs text-slate-400 font-mono">
-              <span>R$ 150.000,00</span>
+              <span>R$ 138.750,40</span>
               <span className="text-red-400 font-semibold">{percentage}% da meta alcançada</span>
               <span>R$ 500.000,00</span>
             </div>
