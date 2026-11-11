@@ -44,83 +44,56 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenDonate }) => {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-[#070b14]/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-8 px-4 sm:px-6 lg:px-8">
-        {/* Zone 1: Brand Wordmark (Single element) */}
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-3 sm:gap-8 sm:px-6 lg:px-8">
+        {/* Compact brand keeps the header from overflowing on narrow screens. */}
         <a
           href="#topo"
-          className="group flex items-center gap-2.5 text-lg font-bold tracking-tight text-white whitespace-nowrap shrink-0 transition-opacity hover:opacity-90"
+          className="group flex shrink-0 items-center gap-2.5 whitespace-nowrap text-base font-bold tracking-tight text-white transition-opacity hover:opacity-90 sm:text-lg"
         >
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-600/20 text-red-500 border border-red-500/30">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-red-500/30 bg-red-600/20 text-red-500">
             <HeartHandshake className="h-4.5 w-4.5" />
           </span>
           <span className="font-extrabold tracking-tight">
-            SOS <span className="text-red-500">Santa Catarina</span>
+            SOS <span className="text-red-500">SC</span>
+            <span className="hidden text-red-500 sm:inline">Santa Catarina</span>
           </span>
         </a>
 
-        {/* Zone 2: 4-5 Clean single-line text navigation links */}
-        <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-300">
-          <a
-            href="#crise"
-            className="hover:text-white transition-colors whitespace-nowrap shrink-0"
-          >
-            A Crise
-          </a>
-          <a
-            href="#galeria"
-            className="hover:text-white transition-colors whitespace-nowrap shrink-0"
-          >
-            Galeria Fotográfica
-          </a>
-          <a
-            href="#impacto"
-            className="hover:text-white transition-colors whitespace-nowrap shrink-0"
-          >
-            Calculadora de Impacto
-          </a>
-          <a
-            href="#atualizacoes"
-            className="hover:text-white transition-colors whitespace-nowrap shrink-0"
-          >
-            Atualizações
-          </a>
-          <a
-            href="#faq"
-            className="hover:text-white transition-colors whitespace-nowrap shrink-0"
-          >
-            Transparência & FAQ
-          </a>
+        <nav className="hidden items-center gap-7 text-sm font-medium text-slate-300 md:flex">
+          <a href="#crise" className="shrink-0 whitespace-nowrap transition-colors hover:text-white">A Crise</a>
+          <a href="#galeria" className="shrink-0 whitespace-nowrap transition-colors hover:text-white">Galeria Fotográfica</a>
+          <a href="#impacto" className="shrink-0 whitespace-nowrap transition-colors hover:text-white">Calculadora de Impacto</a>
+          <a href="#atualizacoes" className="shrink-0 whitespace-nowrap transition-colors hover:text-white">Atualizações</a>
+          <a href="#faq" className="shrink-0 whitespace-nowrap transition-colors hover:text-white">Transparência &amp; FAQ</a>
         </nav>
 
-        {/* Zone 3: Actions (Share + Primary Donate) */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          {/* Share Button (Web Share API with WhatsApp fallback) */}
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
           <button
             type="button"
             onClick={handleShare}
-            className="group inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/80 px-3 py-2 text-xs sm:text-sm font-semibold text-slate-200 transition-all duration-200 hover:bg-slate-700 hover:text-white hover:border-slate-600 active:scale-[0.98] cursor-pointer whitespace-nowrap shrink-0"
+            aria-label={hasCopiedLink ? 'Link copiado' : 'Compartilhar no WhatsApp ou com amigos'}
+            className="group inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/80 px-2.5 py-2 text-xs font-semibold text-slate-200 transition-all duration-200 hover:border-emerald-500/50 hover:bg-slate-700 sm:px-3 sm:text-sm"
             title="Compartilhar no WhatsApp ou com amigos"
           >
             {hasCopiedLink ? (
               <>
                 <Check className="h-4 w-4 text-emerald-400" />
-                <span>Copiado!</span>
+                <span className="hidden sm:inline">Copiado!</span>
               </>
             ) : (
               <>
                 <Share2 className="h-4 w-4 text-emerald-400 transition-transform group-hover:scale-110" />
                 <span className="hidden sm:inline">Compartilhar</span>
-                <span className="sm:hidden">Enviar</span>
               </>
             )}
           </button>
 
-          {/* Primary Donate Action */}
           <button
+            type="button"
             onClick={onOpenDonate}
-            className="group inline-flex items-center gap-2 rounded-lg bg-red-600 px-3.5 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-red-600/20 transition-all duration-200 hover:bg-red-500 hover:shadow-red-500/30 active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer"
+            className="group inline-flex items-center gap-1.5 rounded-lg bg-red-600 px-2.5 py-2 text-xs font-semibold text-white shadow-lg shadow-red-600/20 transition-all duration-200 hover:bg-red-500 sm:gap-2 sm:px-4 sm:text-sm"
           >
-            <Heart className="h-4 w-4 fill-white/20 transition-transform group-hover:scale-110" />
+            <Heart className="h-4 w-4 shrink-0 fill-white/20 transition-transform group-hover:scale-110" />
             <span>Doar via PIX</span>
           </button>
         </div>
