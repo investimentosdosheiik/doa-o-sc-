@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { TopBar } from './components/TopBar';
 import { HeroEmergency } from './components/HeroEmergency';
 import { GoalTracker } from './components/GoalTracker';
@@ -11,6 +12,13 @@ import { FAQSection } from './components/FAQSection';
 import { Footer } from './components/Footer';
 import { DISASTER_PHOTOS, DisasterPhoto } from './data/photos';
 import { CheckCircle2 } from 'lucide-react';
+
+const sectionScrollProps = {
+  initial: { opacity: 0, y: 36 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.12 },
+  transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }
+};
 
 export default function App() {
   const [activePhoto, setActivePhoto] = useState<DisasterPhoto | null>(null);
@@ -52,38 +60,56 @@ export default function App() {
       {/* Top Bar Navigation */}
       <TopBar onOpenDonate={() => handleOpenDonate(25)} />
 
-      {/* Main Content Sections */}
+      {/* Main Content Sections with framer-motion entrance and scroll animations */}
       <main className="flex-1">
-        {/* 1. Hero with Direct Instant PIX Box and Top Impact Photo Showcase */}
-        <HeroEmergency
-          onOpenDonate={(amt) => handleOpenDonate(amt || 25)}
-          onExploreGallery={scrollToGallery}
-          onOpenPhoto={(photo) => setActivePhoto(photo)}
-        />
+        {/* 1. Hero: immediate smooth fade-in and slide-up on entry */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] as const }}
+        >
+          <HeroEmergency
+            onOpenDonate={(amt) => handleOpenDonate(amt || 25)}
+            onExploreGallery={scrollToGallery}
+            onOpenPhoto={(photo) => setActivePhoto(photo)}
+          />
+        </motion.div>
 
         {/* 2. Crowdfunding Goal Progress Bar & Live PIX Donors */}
-        <GoalTracker
-          currentAmount={currentAmount}
-          targetAmount={500000}
-          donorCount={donorCount}
-          onOpenDonate={(amt) => handleOpenDonate(amt || 10)}
-        />
+        <motion.div {...sectionScrollProps}>
+          <GoalTracker
+            currentAmount={currentAmount}
+            targetAmount={500000}
+            donorCount={donorCount}
+            onOpenDonate={(amt) => handleOpenDonate(amt || 10)}
+          />
+        </motion.div>
 
-        {/* 3. Categorized Photo Gallery with Smooth CSS Transitions */}
-        <PhotoGallery onSelectPhoto={(photo) => setActivePhoto(photo)} />
+        {/* 3. Categorized Photo Gallery with Smooth Motion Transitions */}
+        <motion.div {...sectionScrollProps} viewport={{ once: true, amount: 0.08 }}>
+          <PhotoGallery onSelectPhoto={(photo) => setActivePhoto(photo)} />
+        </motion.div>
 
         {/* 4. Real Impact Breakdown (Starting from R$ 10) */}
-        <ImpactCalculator onDonate={(amt) => handleOpenDonate(amt)} />
+        <motion.div {...sectionScrollProps}>
+          <ImpactCalculator onDonate={(amt) => handleOpenDonate(amt)} />
+        </motion.div>
 
         {/* 5. Field Updates & Transparency */}
-        <FieldUpdates />
+        <motion.div {...sectionScrollProps}>
+          <FieldUpdates />
+        </motion.div>
 
         {/* 6. FAQ & Support Channels */}
-        <FAQSection />
+        <motion.div {...sectionScrollProps}>
+          <FAQSection />
+        </motion.div>
       </main>
 
-      {/* Footer */}
-      <Footer />
+      {/* Footer with scroll reveal */}
+      <motion.div {...sectionScrollProps} viewport={{ once: true, amount: 0.1 }}>
+        <Footer />
+      </motion.div>
 
       {/* Lightbox Modal for Photo Inspection */}
       <LightboxModal
@@ -102,18 +128,26 @@ export default function App() {
         onDonationSuccess={handleDonationSuccess}
       />
 
-      {/* Floating Success Toast */}
-      {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-xl border border-emerald-500/40 bg-slate-900/95 px-5 py-3.5 text-white shadow-xl backdrop-blur-sm animate-slideUp">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-400">
-            <CheckCircle2 className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Doação Registrada</p>
-            <p className="text-xs sm:text-sm text-slate-200">{toastMessage}</p>
-          </div>
-        </div>
-      )}
+      {/* Floating Success Toast with AnimatePresence */}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 24, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 16, scale: 0.95 }}
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+            className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-xl border border-emerald-500/40 bg-slate-900/95 px-5 py-3.5 text-white shadow-xl backdrop-blur-sm"
+          >
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-400">
+              <CheckCircle2 className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Doação Registrada</p>
+              <p className="text-xs sm:text-sm text-slate-200">{toastMessage}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

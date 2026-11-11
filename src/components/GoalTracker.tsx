@@ -1,5 +1,6 @@
 import React from 'react';
 import { Target, Heart, Clock, ShieldCheck } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface GoalTrackerProps {
   currentAmount: number;
@@ -60,9 +61,12 @@ export const GoalTracker: React.FC<GoalTrackerProps> = ({
           {/* Simple, clean Progress Bar (No AI glow) */}
           <div className="mt-5">
             <div className="relative h-3 w-full overflow-hidden rounded-full bg-slate-800">
-              <div
-                className="h-full rounded-full bg-red-600 transition-all duration-1000 ease-out"
-                style={{ width: `${percentage}%` }}
+              <motion.div
+                className="h-full rounded-full bg-red-600"
+                initial={{ width: 0 }}
+                whileInView={{ width: `${percentage}%` }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] as const }}
               />
             </div>
             <div className="mt-1.5 flex items-center justify-between text-xs text-slate-400 font-mono">

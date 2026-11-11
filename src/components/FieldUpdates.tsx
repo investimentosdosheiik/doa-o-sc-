@@ -1,5 +1,6 @@
 import React from 'react';
 import { Clock, FileText, CheckCircle2, MapPin, Truck, HeartHandshake } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const UPDATES = [
   {
@@ -63,8 +64,12 @@ export const FieldUpdates: React.FC = () => {
         {/* Timeline List */}
         <div className="space-y-4">
           {UPDATES.map((item, idx) => (
-            <div
+            <motion.div
               key={idx}
+              initial={{ opacity: 0, y: 22 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.22, 1, 0.36, 1] as const }}
               className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 p-6 backdrop-blur-sm transition-all duration-200 hover:border-slate-700 hover:bg-slate-900"
             >
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -94,7 +99,7 @@ export const FieldUpdates: React.FC = () => {
               <p className="mt-2 text-sm text-slate-300 leading-relaxed">
                 {item.content}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Camera, MapPin, Maximize2, AlertCircle, ArrowUpRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { DISASTER_PHOTOS, DisasterPhoto } from '../data/photos';
 
 interface PhotoGalleryProps {
@@ -72,18 +73,24 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onSelectPhoto }) => 
           })}
         </div>
 
-        {/* Gallery Grid with smooth CSS transitions */}
+        {/* Gallery Grid with smooth CSS and motion transitions */}
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 transition-opacity duration-300">
-          {filteredPhotos.map((photo, index) => {
-            const isMarquee = photo.featured && (index === 0 || index === 1);
-            return (
-              <div
-                key={photo.id}
-                onClick={() => onSelectPhoto(photo)}
-                className={`gallery-card group relative overflow-hidden rounded-xl border border-slate-800 bg-slate-900 shadow-md transition-all duration-300 hover:border-slate-700 hover:shadow-xl cursor-pointer ${
-                  isMarquee ? 'sm:col-span-2 lg:col-span-2' : 'col-span-1'
-                }`}
-              >
+          <AnimatePresence mode="popLayout">
+            {filteredPhotos.map((photo, index) => {
+              const isMarquee = photo.featured && (index === 0 || index === 1);
+              return (
+                <motion.div
+                  key={photo.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.94 }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
+                  onClick={() => onSelectPhoto(photo)}
+                  className={`gallery-card group relative overflow-hidden rounded-xl border border-slate-800 bg-slate-900 shadow-md transition-all duration-300 hover:border-slate-700 hover:shadow-xl cursor-pointer ${
+                    isMarquee ? 'sm:col-span-2 lg:col-span-2' : 'col-span-1'
+                  }`}
+                >
                 {/* Image Container with smooth CSS Zoom */}
                 <div className={`relative w-full overflow-hidden bg-slate-950 ${isMarquee ? 'h-64 sm:h-80 lg:h-96' : 'h-64 sm:h-72'}`}>
                   <img
@@ -134,9 +141,10 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onSelectPhoto }) => 
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
+          </AnimatePresence>
         </div>
       </div>
     </section>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ShieldCheck, Heart, Package, Droplets, Home, ChevronRight, AlertCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface ImpactCalculatorProps {
   onDonate: (amount: number) => void;
@@ -94,8 +95,9 @@ export const ImpactCalculator: React.FC<ImpactCalculatorProps> = ({ onDonate }) 
           {PRESET_TIERS.map((tier) => {
             const isSelected = !isCustom && selectedAmount === tier.amount;
             return (
-              <div
+              <motion.div
                 key={tier.amount}
+                whileHover={{ y: -3, transition: { duration: 0.18 } }}
                 onClick={() => handleSelectPreset(tier.amount)}
                 className={`relative flex flex-col justify-between rounded-xl border p-5 transition-all duration-200 cursor-pointer ${
                   isSelected
@@ -150,7 +152,7 @@ export const ImpactCalculator: React.FC<ImpactCalculatorProps> = ({ onDonate }) 
                 >
                   Doar R$ {tier.amount}
                 </button>
-              </div>
+              </motion.div>
             );
           })}
         </div>

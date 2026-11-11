@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { HelpCircle, ChevronDown, ShieldCheck, Mail, Phone } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const FAQS = [
   {
@@ -47,13 +48,17 @@ export const FAQSection: React.FC = () => {
           </p>
         </div>
 
-        {/* Accordion list */}
+        {/* Accordion list with scroll entrance and smooth expand */}
         <div className="space-y-3">
           {FAQS.map((faq, idx) => {
             const isOpen = openIndex === idx;
             return (
-              <div
+              <motion.div
                 key={idx}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.45, delay: idx * 0.07, ease: [0.22, 1, 0.36, 1] as const }}
                 className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/70 transition-colors"
               >
                 <button
@@ -69,12 +74,22 @@ export const FAQSection: React.FC = () => {
                   />
                 </button>
 
-                {isOpen && (
-                  <div className="px-5 pb-5 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/80 pt-4">
-                    {faq.answer}
-                  </div>
-                )}
-              </div>
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.25, ease: 'easeOut' }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 pb-5 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/80 pt-4">
+                        {faq.answer}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
             );
           })}
         </div>
