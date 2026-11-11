@@ -1,11 +1,47 @@
-import React from 'react';
-import { Heart, HeartHandshake } from 'lucide-react';
+import React, { useState } from 'react';
+import { Heart, HeartHandshake, Share2, Check } from 'lucide-react';
 
 interface TopBarProps {
   onOpenDonate: () => void;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({ onOpenDonate }) => {
+  const [hasCopiedLink, setHasCopiedLink] = useState(false);
+
+  const handleShare = async () => {
+    const shareData = {
+      title: 'SOS Santa Catarina - Ajuda Urgente e Reconstrução',
+      text: 'Famílias inteiras estão desabrigadas pelas enchentes e tornados em Santa Catarina. Veja as fotos e ajude com qualquer valor a partir de R$ 10 via PIX direto:',
+      url: window.location.href,
+    };
+
+    // 1. Try native Web Share API (mobile devices, WhatsApp, Telegram, etc.)
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err: unknown) {
+        if ((err as Error)?.name === 'AbortError') return; // User closed share sheet
+      }
+    }
+
+    // 2. Fallback to direct WhatsApp Web / App share
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
+      `${shareData.text}\n${shareData.url}`
+    )}`;
+
+    try {
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    } catch {
+      // 3. Fallback: Copy link to clipboard
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(shareData.url);
+        setHasCopiedLink(true);
+        setTimeout(() => setHasCopiedLink(false), 2500);
+      }
+    }
+  };
+
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-[#070b14]/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-8 px-4 sm:px-6 lg:px-8">
@@ -56,11 +92,33 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenDonate }) => {
           </a>
         </nav>
 
-        {/* Zone 3: 1 Primary Action */}
-        <div className="flex items-center gap-3 shrink-0">
+        {/* Zone 3: Actions (Share + Primary Donate) */}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          {/* Share Button (Web Share API with WhatsApp fallback) */}
+          <button
+            type="button"
+            onClick={handleShare}
+            className="group inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/80 px-3 py-2 text-xs sm:text-sm font-semibold text-slate-200 transition-all duration-200 hover:bg-slate-700 hover:text-white hover:border-slate-600 active:scale-[0.98] cursor-pointer whitespace-nowrap shrink-0"
+            title="Compartilhar no WhatsApp ou com amigos"
+          >
+            {hasCopiedLink ? (
+              <>
+                <Check className="h-4 w-4 text-emerald-400" />
+                <span>Copiado!</span>
+              </>
+            ) : (
+              <>
+                <Share2 className="h-4 w-4 text-emerald-400 transition-transform group-hover:scale-110" />
+                <span className="hidden sm:inline">Compartilhar</span>
+                <span className="sm:hidden">Enviar</span>
+              </>
+            )}
+          </button>
+
+          {/* Primary Donate Action */}
           <button
             onClick={onOpenDonate}
-            className="group inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-red-600/20 transition-all duration-200 hover:bg-red-500 hover:shadow-red-500/30 active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer"
+            className="group inline-flex items-center gap-2 rounded-lg bg-red-600 px-3.5 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-red-600/20 transition-all duration-200 hover:bg-red-500 hover:shadow-red-500/30 active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer"
           >
             <Heart className="h-4 w-4 fill-white/20 transition-transform group-hover:scale-110" />
             <span>Doar via PIX</span>
