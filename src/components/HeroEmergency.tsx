@@ -36,7 +36,7 @@ export const HeroEmergency: React.FC<HeroEmergencyProps> = ({
   onOpenPhoto,
 }) => {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number>(0);
-  const [selectedAmount, setSelectedAmount] = useState<number>(25);
+  const [selectedAmount, setSelectedAmount] = useState<number>(10);
   const [customValue, setCustomValue] = useState<string>('');
   const [isCustom, setIsCustom] = useState<boolean>(false);
 

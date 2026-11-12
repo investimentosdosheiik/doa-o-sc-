@@ -45,7 +45,7 @@ const PRESET_TIERS = [
 ];
 
 export const ImpactCalculator: React.FC<ImpactCalculatorProps> = ({ onDonate }) => {
-  const [selectedAmount, setSelectedAmount] = useState<number>(25);
+  const [selectedAmount, setSelectedAmount] = useState<number>(10);
   const [customInput, setCustomInput] = useState<string>('');
   const [isCustom, setIsCustom] = useState<boolean>(false);
 

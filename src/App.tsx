@@ -23,12 +23,12 @@ const sectionScrollProps = {
 export default function App() {
   const [activePhoto, setActivePhoto] = useState<DisasterPhoto | null>(null);
   const [isDonateModalOpen, setIsDonateModalOpen] = useState<boolean>(false);
-  const [donationAmount, setDonationAmount] = useState<number>(25);
+  const [donationAmount, setDonationAmount] = useState<number>(10);
   const [currentAmount, setCurrentAmount] = useState<number>(338760.50);
   const [donorCount, setDonorCount] = useState<number>(4920);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  const handleOpenDonate = (amount: number = 25) => {
+  const handleOpenDonate = (amount: number = 10) => {
     setDonationAmount(amount >= 10 ? amount : 10);
     setIsDonateModalOpen(true);
   };
@@ -58,7 +58,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#090e18] text-slate-100 flex flex-col font-sans selection:bg-red-600 selection:text-white">
       {/* Top Bar Navigation */}
-      <TopBar onOpenDonate={() => handleOpenDonate(25)} />
+      <TopBar onOpenDonate={() => handleOpenDonate(10)} />
 
       {/* Main Content Sections with framer-motion entrance and scroll animations */}
       <main className="flex-1">
@@ -69,7 +69,7 @@ export default function App() {
           transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] as const }}
         >
           <HeroEmergency
-            onOpenDonate={(amt) => handleOpenDonate(amt || 25)}
+            onOpenDonate={(amt) => handleOpenDonate(amt || 10)}
             onExploreGallery={scrollToGallery}
             onOpenPhoto={(photo) => setActivePhoto(photo)}
           />
@@ -117,7 +117,7 @@ export default function App() {
         photos={DISASTER_PHOTOS}
         onClose={() => setActivePhoto(null)}
         onNavigate={handleNavigateLightbox}
-        onOpenDonate={() => handleOpenDonate(25)}
+        onOpenDonate={() => handleOpenDonate(10)}
       />
 
       {/* Interactive PIX Modal (with quick amount selection starting at R$ 10) */}

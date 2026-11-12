@@ -159,26 +159,26 @@ export const PixModal: React.FC<PixModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-lg rounded-2xl border border-slate-700 bg-slate-900 p-5 sm:p-7 shadow-2xl text-left my-auto animate-in fade-in zoom-in-95 duration-150"
+        className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-2xl border border-slate-700 bg-slate-900 p-4 sm:p-7 shadow-2xl text-left my-auto animate-in fade-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 rounded-lg bg-slate-800 p-2 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors cursor-pointer"
+          className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 rounded-lg bg-slate-800 p-2 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors cursor-pointer"
           title="Fechar"
         >
           <X className="h-5 w-5" />
         </button>
 
         {/* Modal Header */}
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-600/20 text-red-500 border border-red-500/30">
+        <div className="flex items-center gap-3 pr-8">
+          <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-red-600/20 text-red-500 border border-red-500/30 shrink-0">
             <QrCode className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-lg sm:text-xl font-bold text-white">Doação via PIX</h3>
-            <p className="text-xs text-slate-400">Repasse Direto às Famílias Desabrigadas · Sem intermediários</p>
+            <h3 className="text-base sm:text-xl font-bold text-white">Doação via PIX</h3>
+            <p className="text-[11px] sm:text-xs text-slate-400 leading-tight">Repasse Direto às Famílias Desabrigadas · Sem intermediários</p>
           </div>
         </div>
 
@@ -198,7 +198,7 @@ export const PixModal: React.FC<PixModalProps> = ({
                     setCurrentAmount(amt);
                     setIsCustom(false);
                   }}
-                  className={`py-1.5 text-center rounded-lg text-xs font-bold font-mono transition-colors cursor-pointer ${
+                  className={`py-1.5 sm:py-2 text-center rounded-lg text-xs font-bold font-mono transition-colors cursor-pointer ${
                     isSelected
                       ? 'bg-red-600 text-white shadow-sm'
                       : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
@@ -210,22 +210,22 @@ export const PixModal: React.FC<PixModalProps> = ({
             })}
           </div>
 
-          <div className="mt-2 flex items-center gap-2">
-            <span className="text-xs text-slate-400">Ou digite:</span>
+          <div className="mt-2.5 flex items-center gap-2">
+            <span className="text-xs text-slate-400 shrink-0">Ou digite:</span>
             <div className="relative flex-1">
               <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-mono text-slate-500">
                 R$
               </span>
               <input
                 type="number"
-                min="1"
-                placeholder="Ex: 10, 25, 50"
+                min="10"
+                placeholder="Ex: 10, 20, 50"
                 value={customValue}
                 onChange={(e) => {
                   setCustomValue(e.target.value);
                   setIsCustom(true);
                 }}
-                className={`w-full rounded-md border py-1 pl-8 pr-2 text-xs font-mono text-white placeholder-slate-500 focus:outline-none ${
+                className={`w-full rounded-md border py-1.5 pl-8 pr-2 text-xs font-mono text-white placeholder-slate-500 focus:outline-none ${
                   isCustom ? 'border-red-500 bg-slate-950' : 'border-slate-800 bg-slate-950/60'
                 }`}
               />

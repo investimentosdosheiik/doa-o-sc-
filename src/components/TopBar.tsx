@@ -54,8 +54,7 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenDonate }) => {
             <HeartHandshake className="h-4.5 w-4.5" />
           </span>
           <span className="font-extrabold tracking-tight">
-            SOS <span className="text-red-500">SC</span>
-            <span className="hidden text-red-500 sm:inline">Santa Catarina</span>
+            SOS <span className="text-red-500"><span className="sm:hidden">SC</span><span className="hidden sm:inline">Santa Catarina</span></span>
           </span>
         </a>
 
